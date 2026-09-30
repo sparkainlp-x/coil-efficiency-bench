@@ -18,6 +18,11 @@ sys.path.insert(0, str(ROOT))
 
 import coil_bench  # noqa: E402
 
+try:  # Optional: only used to cross-check the paired t interval.
+    from scipy import stats as scipy_stats
+except ImportError:  # pragma: no cover - SciPy is not a dependency
+    scipy_stats = None
+
 SAMPLE = ROOT / "data" / "synthetic_measurements.csv"
 
 
@@ -431,6 +436,24 @@ class CoilBenchTests(unittest.TestCase):
             [p.change_percentage_points for p in summary_b.pairs],
         )
         self.assertEqual([p.load_nm for p in summary_b.pairs], [5.0, 5.0])
+
+    @unittest.skipIf(scipy_stats is None, "SciPy not installed (optional cross-check)")
+    def test_interval_matches_scipy_paired_t_test(self):
+        datasets = {"sample": coil_bench.read_measurements(SAMPLE)}
+        rows = []
+        for index in range(45):
+            rows.append(f"P{index:02d},baseline,0.4,200,0.4,3000")
+            rows.append(f"P{index:02d},candidate,0.4,{188 + (index * 7) % 13},0.4,3000")
+        datasets["45 pairs"] = coil_bench.parse_measurements(io.StringIO(csv_text(rows)))
+        for name, measurements in datasets.items():
+            with self.subTest(name):
+                summary = coil_bench.analyze_measurements(measurements)
+                candidate = [p.candidate_efficiency_pct for p in summary.pairs]
+                baseline = [p.baseline_efficiency_pct for p in summary.pairs]
+                reference = scipy_stats.ttest_rel(candidate, baseline)
+                interval = reference.confidence_interval(0.95)
+                self.assertAlmostEqual(summary.ci95_low_percentage_points, interval.low, delta=1e-6)
+                self.assertAlmostEqual(summary.ci95_high_percentage_points, interval.high, delta=1e-6)
 
 
 if __name__ == "__main__":
