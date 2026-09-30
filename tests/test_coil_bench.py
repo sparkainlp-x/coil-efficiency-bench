@@ -420,6 +420,18 @@ class CoilBenchTests(unittest.TestCase):
                    "re", "statistics", "sys", "typing"}
         self.assertLessEqual(imported, allowed)
 
+    def test_load_nm_only_matches_pairs_and_does_not_affect_efficiency(self):
+        rows_a = complete_rows()
+        rows_b = [row.replace(",0.4,200,", ",5.0,200,").replace(",0.4,190,", ",5.0,190,")
+                  for row in rows_a]
+        self.assertNotEqual(rows_a, rows_b)
+        summary_a, summary_b = run_csv(csv_text(rows_a)), run_csv(csv_text(rows_b))
+        self.assertEqual(
+            [p.change_percentage_points for p in summary_a.pairs],
+            [p.change_percentage_points for p in summary_b.pairs],
+        )
+        self.assertEqual([p.load_nm for p in summary_b.pairs], [5.0, 5.0])
+
 
 if __name__ == "__main__":
     unittest.main()

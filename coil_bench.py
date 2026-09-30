@@ -74,6 +74,14 @@ class DataError(ValueError):
 
 @dataclass(frozen=True)
 class Measurement:
+    """One validated CSV row.
+
+    ``load_nm`` is the load set-point used only to match the baseline and
+    candidate runs of a pair; ``shaft_torque_nm`` is the torque measured during
+    the run and, with ``speed_rpm``, is what determines ``output_power_w``.
+    The two are not required to agree.
+    """
+
     pair_id: str
     configuration: str
     load_nm: float
@@ -188,6 +196,7 @@ def _parse_measurements(stream: TextIO) -> list[Measurement]:
         if speed_rpm < 0:
             raise DataError(f"row {row_number}: speed_rpm must be non-negative")
 
+        # Output power uses the measured torque; load_nm is only a pairing key.
         output_power_w = shaft_torque_nm * (2.0 * math.pi * speed_rpm / 60.0)
         if not math.isfinite(output_power_w):
             raise DataError(f"row {row_number}: calculated mechanical output power is not finite")
