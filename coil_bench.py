@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import re
@@ -29,6 +30,8 @@ CONFIGURATIONS = {"baseline", "candidate"}
 BUNDLED_SYNTHETIC_SAMPLE = (
     Path(__file__).resolve().parent / "data" / "synthetic_measurements.csv"
 )
+# Fingerprint of the bundled sample's parsed readings (see _readings_fingerprint).
+SYNTHETIC_SAMPLE_FINGERPRINT = "a17a8fbb336d512943806af50c6c136d957cd5a59c0227f607afd0335d01d89d"
 
 # Two-sided 95% Student-t critical values (0.975 quantiles) for df 1..30.
 _T_975 = (
@@ -321,13 +324,22 @@ def _measurement_key(measurements: list[Measurement]) -> list[tuple[object, ...]
     )
 
 
+def _readings_fingerprint(measurements: list[Measurement]) -> str:
+    """SHA-256 of the parsed readings, independent of row order and number formatting."""
+    return hashlib.sha256(
+        json.dumps(_measurement_key(measurements), separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
 def _is_bundled_synthetic_sample(
     path: Path, measurements: list[Measurement] | None = None
 ) -> bool:
     """True for the bundled sample file or any unmodified copy of its readings.
 
-    Copies are recognised by identical parsed readings (row order, line endings,
-    BOM, and number formatting do not matter). An edited copy is not recognised.
+    Copies are recognised by a fingerprint of the parsed readings embedded in
+    this module (row order, line endings, BOM, and number formatting do not
+    matter), so this also works for a pip-installed copy that does not ship the
+    data file. An edited copy is not recognised.
     """
     try:
         if path.resolve() == BUNDLED_SYNTHETIC_SAMPLE.resolve():
@@ -336,11 +348,7 @@ def _is_bundled_synthetic_sample(
         pass
     if measurements is None:
         return False
-    try:
-        bundled = read_measurements(BUNDLED_SYNTHETIC_SAMPLE)
-    except (OSError, DataError):
-        return False
-    return _measurement_key(measurements) == _measurement_key(bundled)
+    return _readings_fingerprint(measurements) == SYNTHETIC_SAMPLE_FINGERPRINT
 
 
 def assess_threshold(summary: Summary, minimum_improvement_pp: float) -> str:

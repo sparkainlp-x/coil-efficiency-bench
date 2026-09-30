@@ -12,6 +12,7 @@ import statistics
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -424,7 +425,7 @@ class CoilBenchTests(unittest.TestCase):
                 imported.update(alias.name.split(".")[0] for alias in node.names)
             elif isinstance(node, ast.ImportFrom):
                 imported.add((node.module or "").split(".")[0])
-        allowed = {"__future__", "argparse", "csv", "dataclasses", "json", "math", "pathlib",
+        allowed = {"__future__", "argparse", "csv", "dataclasses", "hashlib", "json", "math", "pathlib",
                    "re", "statistics", "sys", "typing"}
         self.assertLessEqual(imported, allowed)
 
@@ -468,6 +469,18 @@ class CoilBenchTests(unittest.TestCase):
             coil_bench.main(["--version"])
         self.assertEqual(caught.exception.code, 0)
         self.assertIn(coil_bench.__version__, out.getvalue())
+
+    def test_embedded_sample_fingerprint_matches_bundled_file(self):
+        measurements = coil_bench.read_measurements(SAMPLE)
+        self.assertEqual(
+            coil_bench._readings_fingerprint(measurements), coil_bench.SYNTHETIC_SAMPLE_FINGERPRINT
+        )
+        # Recognition must not depend on the data file being present next to the
+        # module (it is not shipped by pip install).
+        missing = Path(tempfile.gettempdir()) / "no-such-dir" / "synthetic_measurements.csv"
+        with unittest.mock.patch.object(coil_bench, "BUNDLED_SYNTHETIC_SAMPLE", missing):
+            self.assertTrue(coil_bench._is_bundled_synthetic_sample(Path("copy.csv"), measurements))
+            self.assertFalse(coil_bench._is_bundled_synthetic_sample(Path("copy.csv"), None))
 
 
 if __name__ == "__main__":
