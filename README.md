@@ -4,11 +4,16 @@
 
 An offline Python utility for checking whether a proposed motor coil-winding or topology change is associated with an efficiency difference in **paired, same-load measurements**. It is a data-analysis utility—not a physics simulator, motor controller, or measurement-collection system. It uses only the Python standard library and makes no network or hardware calls.
 
-The included `data/synthetic_measurements.csv` is **synthetic illustrative data** created only to demonstrate the format and calculations. It is not measured data and must never be presented or interpreted as experimental evidence. When the bundled sample, or an unmodified copy of its readings, is analyzed, the tool labels its output as synthetic. An edited copy is not recognized, so label any derived files yourself.
+The included `data/synthetic_measurements.csv` is **synthetic** data that only demonstrates the format; it is not experimental evidence. Output for the sample, or an unmodified copy of its readings, is labelled synthetic; an edited copy is not recognized, so label derived files yourself.
 
-## Run it
+## Install and run
 
-Requires Python 3.10 or newer; no installation or third-party packages are needed.
+Requires Python 3.10 or newer and no third-party packages. Run the script from this directory, or install it from a clone to get a `coil-bench` command (usable in place of `python3 coil_bench.py`):
+
+```bash
+python3 -m pip install .
+coil-bench --version
+```
 
 ```bash
 python3 coil_bench.py data/synthetic_measurements.csv --threshold-pp 2.0
@@ -17,7 +22,7 @@ python3 -m unittest discover -s tests -v
 python3 -m py_compile coil_bench.py tests/test_coil_bench.py
 ```
 
-`--threshold-pp` is required so a minimum practically meaningful efficiency gain is stated explicitly. The `2.0` value above is only an example chosen for the synthetic demonstration, not a recommended engineering threshold. Set and record the threshold before collecting or inspecting the comparison data; do not change it after seeing the result. For the sample, the output includes a synthetic-data notice. Replace the sample with your own valid CSV to analyze measurements; results are descriptive and apply **only to the specific tested hardware and conditions**.
+`--threshold-pp` (required) is the minimum efficiency gain, in percentage points, that you consider practically meaningful. `2.0` is just a demo value, not a recommendation. Fix and record it before collecting or looking at the data. Results describe **only the tested hardware and conditions**.
 
 ## Measurement CSV
 
@@ -38,13 +43,24 @@ The tool calculates mechanical output power as `torque × 2π × rpm / 60`, then
 
 ## Interpreting a comparison
 
-Pairing controls the comparison for the recorded load point, but it does not remove other confounders. For a useful test, keep the motor, drive, cooling, instrumentation, warm-up, and operating procedure consistent; calibrate instruments; document uncertainty and units; and repeat the paired runs. If possible, alternate or randomize baseline/candidate order to reduce drift effects. Treat a confidence interval that includes zero as inconclusive evidence of a consistent directional change; even an interval excluding zero is not proof that a winding change alone caused the difference or that the result generalizes.
+Pairing controls for the recorded load point, not for other confounders. Keep the motor, drive, cooling, instrumentation, warm-up and procedure consistent; calibrate instruments; repeat pairs; and alternate or randomize baseline/candidate order to limit drift. An interval that includes zero is inconclusive, an interval below the threshold is not proof of no effect, and an interval above it does not show that the winding change alone caused the difference.
 
-The software validates the CSV structure, finite values, complete pairs, and matching load settings. Invalid input exits with status 2 and an error message on standard error; nothing is reported for a partially valid file. It cannot validate calibration, measurement technique, or whether a supplied file is genuinely experimental. Do not label synthetic or otherwise unverified inputs as experimental evidence.
+Invalid input exits with status 2 and a message on standard error; nothing is reported for a partially valid file. The tool cannot check calibration, measurement technique, or whether data are genuinely experimental.
+
+**Test standards.** How to measure motor efficiency (loss segregation, temperature correction, instrument accuracy, load points) is standardized in **IEC 60034-2-1** (rotating electrical machines) and **IEEE Std 112** (polyphase induction motors). This tool does not implement those procedures and makes no claim of compliance with them; it only summarizes paired values you supply. Collect the input according to the standard that applies to your machine.
+
+## Related work / when to use something else
+
+- **General statistics:** `scipy.stats.ttest_rel`, R's `t.test(..., paired = TRUE)`, or [pingouin](https://pingouin-stats.org/) give the same paired t interval and more (effect sizes, non-parametric alternatives such as the Wilcoxon signed-rank test, equivalence tests via TOST). Use them if your data are not a clean baseline/candidate CSV or you need other analyses.
+- **Mixed load points or many factors:** a regression or mixed-effects model (e.g. statsmodels) can model load and run order explicitly instead of pooling pairs.
+- **Measurement uncertainty:** the [GUM](https://www.bipm.org/en/committees/jc/jcgm/publications) approach (JCGM 100) and tools such as the Python `uncertainties` package propagate instrument uncertainty, which this tool does not.
+
+Coil Efficiency Bench is useful as a small, dependency-free, auditable check with strict CSV validation and a pre-registered threshold for a simple paired baseline/candidate comparison.
 
 ## Repository contents
 
 - `coil_bench.py` — analysis CLI and validation logic.
+- `pyproject.toml` — packaging (`pip install .`); the version lives in `coil_bench.__version__`.
 - `data/synthetic_measurements.csv` — clearly identified synthetic demonstration data.
 - `tests/test_coil_bench.py` — standard-library unit tests.
 - `LICENSE`, `COMMERCIAL-LICENSE.md`, `CITATION.cff` — licensing and citation metadata.
