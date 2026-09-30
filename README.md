@@ -17,7 +17,7 @@ python3 -m unittest discover -s tests -v
 python3 -m py_compile coil_bench.py tests/test_coil_bench.py
 ```
 
-`--threshold-pp` is required so a minimum practically meaningful efficiency gain is stated explicitly. The `2.0` value above is only an example chosen for the synthetic demonstration, not a recommended engineering threshold. Set and record the threshold before collecting or inspecting the comparison data; do not change it after seeing the result. For the sample, the output includes a synthetic-data notice. Replace the sample with your own valid CSV to analyze measurements; results are descriptive and apply **only to the specific tested hardware and conditions**. This project does not test broader claims about gravity, unified-field ideas, vertical lift/take-off, or cosmic processes.
+`--threshold-pp` is required so a minimum practically meaningful efficiency gain is stated explicitly. The `2.0` value above is only an example chosen for the synthetic demonstration, not a recommended engineering threshold. Set and record the threshold before collecting or inspecting the comparison data; do not change it after seeing the result. For the sample, the output includes a synthetic-data notice. Replace the sample with your own valid CSV to analyze measurements; results are descriptive and apply **only to the specific tested hardware and conditions**.
 
 ## Measurement CSV
 
