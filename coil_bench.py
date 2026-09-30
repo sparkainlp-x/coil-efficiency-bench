@@ -15,6 +15,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TextIO
 
+__version__ = "1.0.0"
+
 REQUIRED_COLUMNS = (
     "pair_id",
     "configuration",
@@ -434,6 +436,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Compare paired baseline/candidate motor efficiency measurements offline."
     )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("csv_path", type=Path, help="CSV file using the documented measurement schema")
     parser.add_argument(
         "--threshold-pp",

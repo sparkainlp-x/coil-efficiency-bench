@@ -6,6 +6,7 @@ import dataclasses
 import io
 import json
 import math
+import re
 import shutil
 import statistics
 import sys
@@ -196,7 +197,7 @@ class CoilBenchTests(unittest.TestCase):
             with self.subTest(df=df):
                 self.assertAlmostEqual(coil_bench.t_critical_975(df), expected, delta=1e-6)
         values = [coil_bench.t_critical_975(df) for df in range(1, 500)]
-        self.assertTrue(all(a > b for a, b in zip(values, values[1:])))
+        self.assertTrue(all(a > b for a, b in zip(values, values[1:], strict=False)))
         self.assertTrue(all(v > 1.959963984 for v in values))
         for bad in (0, -1, 2.0, True):
             with self.subTest(bad=bad):
@@ -209,7 +210,9 @@ class CoilBenchTests(unittest.TestCase):
             "B,baseline,0.4,200,0.4,2980", "B,candidate,0.4,195,0.4,2980",
         ]
         summary = run_csv(csv_text(rows))
-        eff = lambda power, rpm: 100 * 0.4 * 2 * math.pi * rpm / 60 / power
+        def eff(power, rpm):
+            return 100 * 0.4 * 2 * math.pi * rpm / 60 / power
+
         d1 = eff(190, 3000) - eff(200, 3000)
         d2 = eff(195, 2980) - eff(200, 2980)
         mean = (d1 + d2) / 2
@@ -454,6 +457,17 @@ class CoilBenchTests(unittest.TestCase):
                 interval = reference.confidence_interval(0.95)
                 self.assertAlmostEqual(summary.ci95_low_percentage_points, interval.low, delta=1e-6)
                 self.assertAlmostEqual(summary.ci95_high_percentage_points, interval.high, delta=1e-6)
+
+    def test_version_is_single_sourced_and_matches_citation(self):
+        citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
+        match = re.search(r"^version: (\S+)$", citation, re.MULTILINE)
+        self.assertIsNotNone(match)
+        self.assertEqual(coil_bench.__version__, match.group(1))
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out), self.assertRaises(SystemExit) as caught:
+            coil_bench.main(["--version"])
+        self.assertEqual(caught.exception.code, 0)
+        self.assertIn(coil_bench.__version__, out.getvalue())
 
 
 if __name__ == "__main__":
