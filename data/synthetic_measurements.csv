@@ -1,0 +1,17 @@
+pair_id,configuration,load_nm,input_power_w,shaft_torque_nm,speed_rpm
+SYN-01,baseline,0.35,174,0.35,2960
+SYN-01,candidate,0.35,165,0.35,2975
+SYN-02,baseline,0.35,176,0.35,2945
+SYN-02,candidate,0.35,166,0.35,2960
+SYN-03,baseline,0.50,246,0.50,2880
+SYN-03,candidate,0.50,233,0.50,2900
+SYN-04,baseline,0.50,250,0.50,2865
+SYN-04,candidate,0.50,236,0.50,2890
+SYN-05,baseline,0.65,319,0.65,2810
+SYN-05,candidate,0.65,301,0.65,2840
+SYN-06,baseline,0.65,324,0.65,2790
+SYN-06,candidate,0.65,305,0.65,2825
+SYN-07,baseline,0.50,248,0.50,2870
+SYN-07,candidate,0.50,234,0.50,2895
+SYN-08,baseline,0.35,173,0.35,2970
+SYN-08,candidate,0.35,163,0.35,2980
