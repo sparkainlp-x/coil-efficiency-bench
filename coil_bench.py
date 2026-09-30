@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TextIO
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 REQUIRED_COLUMNS = (
     "pair_id",
