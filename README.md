@@ -1,6 +1,7 @@
 # Coil Efficiency Bench
 
 [![tests](https://github.com/sparkainlp-x/coil-efficiency-bench/actions/workflows/tests.yml/badge.svg)](https://github.com/sparkainlp-x/coil-efficiency-bench/actions/workflows/tests.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23067995.svg)](https://doi.org/10.5281/zenodo.23067995)
 
 An offline Python utility for checking whether a proposed motor coil-winding or topology change is associated with an efficiency difference in **paired, same-load measurements**. It is a data-analysis utility—not a physics simulator, motor controller, or measurement-collection system. It uses only the Python standard library and makes no network or hardware calls.
 
