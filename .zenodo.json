@@ -1,0 +1,35 @@
+{
+  "upload_type": "software",
+  "title": "Coil Efficiency Bench",
+  "description": "<p>Offline, standard-library-only utility that summarizes paired, load-matched baseline/candidate motor-efficiency measurements (mean paired change, SD, Student's t 95% interval, pre-specified threshold check); the bundled data is synthetic and is not experimental evidence.</p>",
+  "creators": [
+    {
+      "name": "Brisson, Jean-François",
+      "affiliation": "Spark AI NLP",
+      "orcid": "0009-0000-9778-5374"
+    }
+  ],
+  "access_right": "open",
+  "license": "AGPL-3.0-only",
+  "keywords": [
+    "motor-efficiency",
+    "paired-comparison",
+    "confidence-interval",
+    "measurement",
+    "offline",
+    "research software"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/sparkainlp-x/coil-efficiency-bench",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "language": "eng",
+  "communities": [
+    {
+      "identifier": "spark-ai-nlp"
+    }
+  ]
+}
