@@ -1,7 +1,9 @@
 {
   "upload_type": "software",
-  "title": "Coil Efficiency Bench",
-  "description": "<p>Offline, standard-library-only utility that summarizes paired, load-matched baseline/candidate motor-efficiency measurements (mean paired change, SD, Student's t 95% interval, pre-specified threshold check); the bundled data is synthetic and is not experimental evidence.</p>",
+  "title": "Coil Efficiency Bench: paired, load-matched analysis of motor-efficiency measurements",
+  "version": "1.1.2",
+  "publication_date": "2026-10-08",
+  "description": "<p>Coil Efficiency Bench checks whether a proposed motor coil-winding or topology change is associated with an efficiency difference in paired, same-load measurements. From a CSV of baseline and candidate rows (input power, shaft torque, speed and load), it computes efficiency per row and reports the mean paired change, its standard deviation, a Student's t 95% confidence interval and a comparison against a practical threshold fixed before the analysis. Input is validated strictly, and output for the bundled sample is labelled synthetic.</p><p>Scope: it is a data-analysis utility, not a physics simulator, motor controller or measurement system, and it does not implement the IEC 60034-2-1 or IEEE 112 test procedures. Results describe only the tested hardware and conditions. The bundled measurements are SYNTHETIC and only demonstrate the format.</p><p>Usage: Python 3.10 or later, standard library only; <code>pip install .</code> adds a <code>coil-bench</code> command. Run <code>python3 coil_bench.py data/synthetic_measurements.csv --threshold-pp 2.0</code> (add <code>--json</code> for machine-readable output). Tests: <code>python3 -m unittest discover -s tests -v</code> (run in CI on Python 3.10 to 3.13 with coverage).</p><p>Citation: cite the concept DOI <a href=\"https://doi.org/10.5281/zenodo.23067995\">10.5281/zenodo.23067995</a> for all versions, or the version DOI of the release you used. Source code: <a href=\"https://github.com/sparkainlp-x/coil-efficiency-bench\">github.com/sparkainlp-x/coil-efficiency-bench</a>. Licence: AGPL-3.0-only; commercial licensing is available (see COMMERCIAL-LICENSE.md).</p>",
   "creators": [
     {
       "name": "Brisson, Jean-François",
@@ -12,12 +14,14 @@
   "access_right": "open",
   "license": "AGPL-3.0-only",
   "keywords": [
-    "motor-efficiency",
-    "paired-comparison",
-    "confidence-interval",
-    "measurement",
+    "electric motors",
+    "efficiency measurement",
+    "paired comparison",
+    "confidence interval",
+    "experimental design",
+    "data analysis",
     "offline",
-    "research software"
+    "Python"
   ],
   "related_identifiers": [
     {
@@ -31,5 +35,6 @@
     {
       "identifier": "spark-ai-nlp"
     }
-  ]
+  ],
+  "notes": "Evidence status: SYNTHETIC example data; no field performance is claimed. Commercial licensing: see COMMERCIAL-LICENSE.md."
 }
