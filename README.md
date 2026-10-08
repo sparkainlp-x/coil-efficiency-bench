@@ -68,7 +68,7 @@ Coil Efficiency Bench is useful as a small, dependency-free, auditable check wit
 
 ## Citation
 
-See [CITATION.cff](CITATION.cff).
+See [CITATION.cff](CITATION.cff). Archived on Zenodo: concept DOI [10.5281/zenodo.23067995](https://doi.org/10.5281/zenodo.23067995) (all versions); v1.1.2: [10.5281/zenodo.23241548](https://doi.org/10.5281/zenodo.23241548).
 
 ## License
 

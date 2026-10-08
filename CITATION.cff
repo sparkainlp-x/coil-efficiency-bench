@@ -10,6 +10,13 @@ authors:
     affiliation: "Spark AI NLP"
 version: 1.1.2
 date-released: "2026-10-08"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23067995
+    description: "Concept DOI (all versions)"
+  - type: doi
+    value: 10.5281/zenodo.23241548
+    description: "Version DOI for v1.1.2"
 license: AGPL-3.0-only
 repository-code: "https://github.com/sparkainlp-x/coil-efficiency-bench"
 abstract: "Offline, standard-library-only utility that summarizes paired, load-matched baseline/candidate motor-efficiency measurements (mean paired change, SD, Student's t 95% interval, pre-specified threshold check); the bundled data is synthetic and is not experimental evidence."
